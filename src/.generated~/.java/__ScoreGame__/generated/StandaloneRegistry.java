@@ -9,6 +9,7 @@ import ej.components.registry.impl.AbstractRegistry;
 public class StandaloneRegistry extends AbstractRegistry {
 
 	private static final String[] BUNDLES = {
+			"__ScoreGame__.generated.ScoreGameActivator",
 "ej.wadapps.management.activators.DefaultManagementActivator"
 	};
 

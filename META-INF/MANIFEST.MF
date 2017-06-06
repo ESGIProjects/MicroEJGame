@@ -3,4 +3,4 @@ Application-Id: ScoreGame
 Application-Version: 0.1.0
 Application-PrintableName: ScoreGame
 Application-Description: ScoreGame
-
+Application-Activities: com.esgi.scoregame.MainActivity
