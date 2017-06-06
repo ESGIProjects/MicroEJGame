@@ -1,0 +1,5 @@
+#Tue Jun 06 14:29:33 CEST 2017
+version=0.1.0
+name=ScoreGame
+types=java.util.logging.*,java.security.*,ej.components.*,ej.wadapps.management.*,ej.components.registry.util.*,ej.wadapps.standalone.*,ej.wadapps.registry.*,java.net.*,org.eclipse.core.runtime.*,ej.components.dependencyinjection.*,ej.components.dependencyinjection.util.*,ej.wadapps.management.util.*,java.lang.*,ej.io.progress.*,android.net.*,ej.wadapps.registry.util.*,ej.wadapps.storage.kf.*,ej.components.registry.impl.*,java.io.*,java.lang.ref.*,ej.wadapps.storage.kf.local.*,ej.observable.*,java.lang.annotation.*,java.lang.reflect.*,ej.components.registry.*,properties.*,ej.kf.*,ej.wadapps.admin.*,ej.wadapps.storage.*,java.util.*,ej.wadapps.intern.*,ej.bon.*,ej.net.*,__ScoreGame__.generated.*,ej.wadapps.management.activators.*,ej.wadapps.app.*,ej.util.logging.handler.*
+entryPoint=__ScoreGame__.generated.ScoreGameEntryPoint
