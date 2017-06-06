@@ -3,6 +3,7 @@ package com.esgi.scoregame;
 import java.util.ArrayList;
 
 import com.esgi.scoregame.pages.MenuPage;
+import com.esgi.scoregame.pages.ScorePage;
 
 import ej.microui.MicroUI;
 import ej.navigation.desktop.NavigationDesktop;
@@ -38,6 +39,7 @@ public class MainActivity implements Activity {
 		MicroUI.start();
 		nd = new NavigationDesktop();
 		scores = new ArrayList<Double>();
+		//nd.show(new MenuPage());
 		nd.show(new MenuPage());
 	}
 
@@ -68,5 +70,4 @@ public class MainActivity implements Activity {
 	public static void display(Page p){
 		nd.show(p);
 	}
-
 }

@@ -1,7 +1,5 @@
 package com.esgi.scoregame.pages;
 
-import com.esgi.scoregame.MainActivity;
-
 import ej.container.List;
 import ej.container.Split;
 import ej.navigation.page.Page;
@@ -9,33 +7,33 @@ import ej.widget.basic.Label;
 import ej.widget.composed.Button;
 import ej.widget.listener.OnClickListener;
 
-public class MenuPage extends Page {
+public class ScorePage extends Page {
+
+private Split container;
 	
-	private Split container;
-	
-	public MenuPage(){
+	public ScorePage(double score){
 		
 		container = new Split(false,0.3f);
-		Label title = new Label("ScoreGame");
+		Label scoreLabel = new Label("Score : " + score);
 		
-		List buttonList = new List(false);
+		Split buttonList = new Split(true, 0.5f);
 		
-		Button play = new Button("Play");
+		Button replay = new Button("Replay");
 		Button exit = new Button("Exit");
 		
-		buttonList.add(play);
-		buttonList.add(exit);
+		buttonList.setFirst(replay);
+		buttonList.setLast(exit);
 		
-		container.setFirst(title);
+		container.setFirst(scoreLabel);
 		container.setLast(buttonList);
 		
 		setWidget(container);
 		
-		play.addOnClickListener(new OnClickListener() {
+		replay.addOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick() {
-				MainActivity.display(new GamePage());
+				//MainActivity.display(new MenuPage());
 			}
 		});
 		
@@ -48,4 +46,5 @@ public class MenuPage extends Page {
 		});
 	}
 
+	
 }
