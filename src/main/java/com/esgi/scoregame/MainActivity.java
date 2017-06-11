@@ -2,6 +2,7 @@ package com.esgi.scoregame;
 
 import java.util.ArrayList;
 
+import com.esgi.scoregame.pages.GamePage;
 import com.esgi.scoregame.pages.MenuPage;
 import com.esgi.scoregame.pages.ScorePage;
 
@@ -37,10 +38,12 @@ public class MainActivity implements Activity {
 	public void onStart() {
 		// TODO Auto-generated method stub
 		MicroUI.start();
+		
 		nd = new NavigationDesktop();
 		scores = new ArrayList<Double>();
+		
 		//nd.show(new MenuPage());
-		nd.show(new MenuPage());
+		nd.show(new GamePage()); // Development purpose
 	}
 
 	@Override
