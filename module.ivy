@@ -29,6 +29,8 @@
 		-->
         <dependency org="ej.api" name="edc" rev="[1.2.0-RC0,2.0.0-RC0[" conf="provided->*" />
         <dependency org="ej.library.wadapps" name="framework" rev="[1.2.0-RC0,2.0.0-RC0[" />
+        <dependency org="ej.library.wadapps" name="exit" rev="[1.0.0-RC0,2.0.0-RC0[" />
+        
         
         <!-- 
         	Additionnal dependencies only used by MicroEJ standalone application launches
@@ -37,6 +39,7 @@
         <dependency org="ej.library.wadapps" name="management" rev="[1.1.3-RC0,2.0.0-RC0[" conf="microej.launch.standalone->*"/>
         <dependency org="ej.api" name="microui" rev="[2.0.0_RC0,3.0.0-RC0[" conf="provided->*"/>
     	<dependency org="ej.api" name="mwt" rev="[2.0.0-RC0,3.0.0-RC0[" conf="provided->*" />
-    	<dependency org="ej.library.ui" name="widget" rev="2.0.0-alpha.9" />
+    	<dependency org="ej.library.ui" name="widget" rev="[2.0.0-RC0,3.0.0-RC0[" />
+    	
     </dependencies>
 </ivy-module>

@@ -7,13 +7,15 @@ import com.esgi.scoregame.pages.MenuPage;
 import com.esgi.scoregame.pages.ScorePage;
 
 import ej.microui.MicroUI;
-import ej.navigation.desktop.NavigationDesktop;
-import ej.navigation.page.Page;
+import ej.mwt.Desktop;
+import ej.mwt.Panel;
 import ej.wadapps.app.Activity;
+import ej.widget.navigation.navigator.HistorizedNavigator;
+import ej.widget.navigation.transition.HorizontalTransitionManager;
 
 public class MainActivity implements Activity {
 	
-	private static NavigationDesktop nd;
+	private static HistorizedNavigator navigator;
 	private static ArrayList<Double> scores;
 
 	@Override
@@ -39,11 +41,21 @@ public class MainActivity implements Activity {
 		// TODO Auto-generated method stub
 		MicroUI.start();
 		
-		nd = new NavigationDesktop();
+		navigator = new HistorizedNavigator();
+		navigator.setTransitionManager(new HorizontalTransitionManager());
+		
 		scores = new ArrayList<Double>();
 		
-		//nd.show(new MenuPage());
-		nd.show(new GamePage()); // Development purpose
+		//navigator.show(new MenuPage());
+		navigator.show(new GamePage()); // Development purpose
+		
+		Desktop desktop = new Desktop();
+		Panel mainPanel = new Panel();
+		
+		mainPanel.setWidget(navigator);
+		mainPanel.show(desktop, true);
+		
+		desktop.show();
 	}
 
 	@Override
@@ -70,7 +82,7 @@ public class MainActivity implements Activity {
 
 	}
 	
-	public static void display(Page p){
+	/*public static void display(Page p){
 		nd.show(p);
-	}
+	}*/
 }

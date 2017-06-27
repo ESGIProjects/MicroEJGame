@@ -2,12 +2,13 @@ package com.esgi.scoregame.pages;
 
 import com.esgi.scoregame.MainActivity;
 
-import ej.container.List;
-import ej.container.Split;
-import ej.navigation.page.Page;
+
 import ej.widget.basic.Label;
 import ej.widget.composed.Button;
+import ej.widget.container.List;
+import ej.widget.container.Split;
 import ej.widget.listener.OnClickListener;
+import ej.widget.navigation.page.Page;
 
 public class MenuPage extends Page {
 	
@@ -35,7 +36,7 @@ public class MenuPage extends Page {
 			
 			@Override
 			public void onClick() {
-				MainActivity.display(new GamePage());
+				//MainActivity.display(new GamePage());
 			}
 		});
 		

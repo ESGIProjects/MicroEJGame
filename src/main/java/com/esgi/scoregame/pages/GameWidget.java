@@ -1,32 +1,48 @@
 package com.esgi.scoregame.pages;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
-import ej.microui.display.Colors;
-import ej.microui.display.Display;
-import ej.microui.display.Displayable;
+import com.esgi.scoregame.models.Ball;
+
 import ej.microui.display.GraphicsContext;
 import ej.microui.display.Image;
-import ej.microui.util.EventHandler;
 import ej.mwt.Widget;
 import ej.style.Element;
 import ej.style.State;
 
 public class GameWidget extends Widget implements Element {
 	
+	// Assets
+	private Image wallpaper;
 	private Image player;
 	private Image[] pokeball = new Image[4];
+	
+	// Attributs du jeu
+	int backgroundPosition = 0;
+	private Date startDate;
+	private List<Ball> balls = new ArrayList<Ball>();
 
 	public GameWidget() {
 		super();
-	
-		loadAssets();
-		// TODO Auto-generated constructor stub
 		
+		startDate = new Date();		
+		loadAssets();
+		
+		// Ball test
+		
+		animate();		
 	}
 	
 	public void loadAssets() {
 		try {
+			wallpaper = Image.createImage("/images/wallpaper.png");
 			player = Image.createImage("/images/pikachu.png");
 			pokeball[0] = Image.createImage("/images/pokeball.png");
 			pokeball[1] = Image.createImage("/images/superball.png");
@@ -39,15 +55,98 @@ public class GameWidget extends Widget implements Element {
 
 	@Override
 	public void render(GraphicsContext g) {
-		// TODO Auto-generated method stub
-		g.setColor(Colors.BLUE);
-		g.fillRect(0, 0, getWidth(), getHeight());
-		//g.drawImage(player, 0, 0, GraphicsContext.TOP | GraphicsContext.LEFT);
+		// Wallpaper
+		drawImage(g, wallpaper, -backgroundPosition, 0);
+		drawImage(g, wallpaper, getWidth() - backgroundPosition, 0);
 		
-		for (int i = 0; i < pokeball.length; i++)
-			drawImage(g, pokeball[i], 30 * i, 0);
+		// Player position
+		drawImage(g, player, 20, getCenterY(), GraphicsContext.VCENTER | GraphicsContext.LEFT);
 		
-		drawImageToCenter(g, player);
+		// Balls position
+		for (Ball ball : balls) {
+			drawImage(g, pokeball[ball.getBallType()], ball.getX(), ball.getY());
+		}
+	}
+	
+	public void animate(){
+		TimerTask animator = new AnimatorTask(this);
+		Timer animationTimer = new Timer();
+		animationTimer.schedule(animator, 1000/30, 1000/30);
+	}
+	
+	private class AnimatorTask extends TimerTask {
+
+		private final int ABSOLUTE_INCREMENT = 6;
+		private final GameWidget widget;
+		
+		private int left = 0;
+		private int right;
+		private int top = 0;
+		private int bottom;
+		
+		private int count = 0;
+		
+		private Random random;
+		
+		private int hMove = ABSOLUTE_INCREMENT;
+			
+		public AnimatorTask(GameWidget widget) {
+			this.widget = widget;
+			right = widget.getWidth();
+			bottom = widget.getHeight();
+			random = new Random();
+		}
+		
+		@Override
+		public void run() {
+			
+			count++;
+			
+			// Animate background
+			widget.backgroundPosition++;
+			
+			if (widget.backgroundPosition >= widget.getWidth()) {
+				widget.backgroundPosition = 0;
+			}
+			
+			/*for (Ball ball : widget.balls) {
+				
+			}*/
+			
+			Iterator<Ball> iterator = widget.balls.iterator();
+			
+			while(iterator.hasNext()) {
+				Ball ball = iterator.next();
+				
+				// Move balls toward player
+				int x = ball.getX();
+				ball.setX(x - hMove);
+				
+				// Delete balls that are outside the screen
+				if (x <= -24) {
+					iterator.remove();
+				}
+			}
+			
+			/*Iterator<String> iter = myArrayList.iterator();
+
+			while (iter.hasNext()) {
+			    String str = iter.next();
+
+			    if (someCondition)
+			        iter.remove();
+			} */
+			
+			
+			// Create new balls
+			if (count % 30 == 0) {
+				int randomHeight = random.nextInt(10) * 24;
+				int randomBall = random.nextInt(4);
+				widget.balls.add(new Ball(getWidth(), randomHeight, randomBall));
+			}
+			
+			widget.repaint();
+		}		
 	}
 	
 	public int getCenterX() {
@@ -63,7 +162,11 @@ public class GameWidget extends Widget implements Element {
 	}
 	
 	private void drawImage(GraphicsContext g, Image image, int x, int y) {
-		g.drawImage(image, x, y, GraphicsContext.TOP | GraphicsContext.LEFT);
+		drawImage(g, image, x, y, GraphicsContext.TOP | GraphicsContext.LEFT);
+	}
+	
+	private void drawImage(GraphicsContext g, Image image, int x, int y, int anchor) {
+		g.drawImage(image, x, y, anchor);
 	}
 
 	@Override

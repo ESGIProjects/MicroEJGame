@@ -1,8 +1,8 @@
 package com.esgi.scoregame.pages;
 
-import ej.container.Split;
-import ej.navigation.page.Page;
 import ej.widget.composed.Button;
+import ej.widget.container.Split;
+import ej.widget.navigation.page.Page;
 
 public class GamePage extends Page {
 	
