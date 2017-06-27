@@ -10,6 +10,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import com.esgi.scoregame.models.Ball;
+import com.esgi.scoregame.models.Player;
 
 import ej.microui.display.GraphicsContext;
 import ej.microui.display.Image;
@@ -20,20 +21,24 @@ import ej.style.State;
 public class GameWidget extends Widget implements Element {
 	
 	// Assets
-	private Image wallpaper;
-	private Image player;
-	private Image[] pokeball = new Image[4];
+	private Image wallpaperImage;
+	private Image playerImage;
+	private Image[] pokeballImages = new Image[4];
 	
 	// Attributs du jeu
 	int backgroundPosition = 0;
 	private Date startDate;
-	private List<Ball> balls = new ArrayList<Ball>();
+	private Player player;
+	private List<Ball> balls;
 
 	public GameWidget() {
 		super();
 		
-		startDate = new Date();		
 		loadAssets();
+		
+		startDate = new Date();	
+		player = new Player(20, 122);
+		balls = new ArrayList<Ball>();
 		
 		// Ball test
 		
@@ -42,12 +47,12 @@ public class GameWidget extends Widget implements Element {
 	
 	public void loadAssets() {
 		try {
-			wallpaper = Image.createImage("/images/wallpaper.png");
-			player = Image.createImage("/images/pikachu.png");
-			pokeball[0] = Image.createImage("/images/pokeball.png");
-			pokeball[1] = Image.createImage("/images/superball.png");
-			pokeball[2] = Image.createImage("/images/hyperball.png");
-			pokeball[3] = Image.createImage("/images/masterball.png");
+			wallpaperImage = Image.createImage("/images/wallpaper.png");
+			playerImage = Image.createImage("/images/pikachu.png");
+			pokeballImages[0] = Image.createImage("/images/pokeball.png");
+			pokeballImages[1] = Image.createImage("/images/superball.png");
+			pokeballImages[2] = Image.createImage("/images/hyperball.png");
+			pokeballImages[3] = Image.createImage("/images/masterball.png");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -55,16 +60,16 @@ public class GameWidget extends Widget implements Element {
 
 	@Override
 	public void render(GraphicsContext g) {
-		// Wallpaper
-		drawImage(g, wallpaper, -backgroundPosition, 0);
-		drawImage(g, wallpaper, getWidth() - backgroundPosition, 0);
+		// Wallpapers
+		drawImage(g, wallpaperImage, -backgroundPosition, 0);
+		drawImage(g, wallpaperImage, getWidth() - backgroundPosition, 0);
 		
 		// Player position
-		drawImage(g, player, 20, getCenterY(), GraphicsContext.VCENTER | GraphicsContext.LEFT);
+		drawImage(g, playerImage, player.getX(), player.getY(), GraphicsContext.VCENTER | GraphicsContext.LEFT);
 		
 		// Balls position
 		for (Ball ball : balls) {
-			drawImage(g, pokeball[ball.getBallType()], ball.getX(), ball.getY());
+			drawImage(g, pokeballImages[ball.getBallType()], ball.getX(), ball.getY());
 		}
 	}
 	
@@ -127,16 +132,6 @@ public class GameWidget extends Widget implements Element {
 					iterator.remove();
 				}
 			}
-			
-			/*Iterator<String> iter = myArrayList.iterator();
-
-			while (iter.hasNext()) {
-			    String str = iter.next();
-
-			    if (someCondition)
-			        iter.remove();
-			} */
-			
 			
 			// Create new balls
 			if (count % 30 == 0) {
