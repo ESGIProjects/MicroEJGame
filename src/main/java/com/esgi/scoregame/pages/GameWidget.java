@@ -23,7 +23,7 @@ public class GameWidget extends Widget implements Element {
 	// Assets
 	private Image wallpaperImage;
 	private Image playerImage;
-	private Image[] pokeballImages = new Image[4];
+	private Image[] pokeballImages = new Image[5];
 	
 	// Attributs du jeu
 	int backgroundPosition = 0;
@@ -39,9 +39,7 @@ public class GameWidget extends Widget implements Element {
 		startDate = new Date();	
 		player = new Player(20, 122);
 		balls = new ArrayList<Ball>();
-		
-		// Ball test
-		
+				
 		animate();		
 	}
 	
@@ -53,6 +51,7 @@ public class GameWidget extends Widget implements Element {
 			pokeballImages[1] = Image.createImage("/images/superball.png");
 			pokeballImages[2] = Image.createImage("/images/hyperball.png");
 			pokeballImages[3] = Image.createImage("/images/masterball.png");
+			pokeballImages[4] = Image.createImage("/images/potion.png");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -74,7 +73,7 @@ public class GameWidget extends Widget implements Element {
 	}
 	
 	public void animate(){
-		TimerTask animator = new AnimatorTask(this);
+		TimerTask animator = new AnimatorTask(this, player);
 		Timer animationTimer = new Timer();
 		animationTimer.schedule(animator, 1000/30, 1000/30);
 	}
@@ -83,11 +82,7 @@ public class GameWidget extends Widget implements Element {
 
 		private final int ABSOLUTE_INCREMENT = 6;
 		private final GameWidget widget;
-		
-		private int left = 0;
-		private int right;
-		private int top = 0;
-		private int bottom;
+		private final Player player;
 		
 		private int count = 0;
 		
@@ -95,10 +90,9 @@ public class GameWidget extends Widget implements Element {
 		
 		private int hMove = ABSOLUTE_INCREMENT;
 			
-		public AnimatorTask(GameWidget widget) {
+		public AnimatorTask(GameWidget widget, Player player) {
 			this.widget = widget;
-			right = widget.getWidth();
-			bottom = widget.getHeight();
+			this.player = player;
 			random = new Random();
 		}
 		
@@ -114,30 +108,52 @@ public class GameWidget extends Widget implements Element {
 				widget.backgroundPosition = 0;
 			}
 			
-			/*for (Ball ball : widget.balls) {
-				
-			}*/
-			
 			Iterator<Ball> iterator = widget.balls.iterator();
 			
 			while(iterator.hasNext()) {
 				Ball ball = iterator.next();
 				
-				// Move balls toward player
+				// Move objects toward player
 				int x = ball.getX();
+				int y = ball.getY();
 				ball.setX(x - hMove);
 				
-				// Delete balls that are outside the screen
+				// Check for collision
+				if ((x <= player.getX() + 35) && (y <= player.getY() + 35) && (x + 24 >= player.getX() - 35) && (y + 24 >= player.getY() - 35)) {
+					int lives = player.getLives();
+					
+					if (ball.getBallType() == 4 && lives < 3) {
+						player.setLives(++lives);
+					} else {
+						player.setLives(--lives);
+					}
+					
+					iterator.remove();
+				}
+				
+				// Delete objects that are outside the screen
 				if (x <= -24) {
 					iterator.remove();
 				}
 			}
 			
-			// Create new balls
+			// Create new balls every second
 			if (count % 30 == 0) {
 				int randomHeight = random.nextInt(10) * 24;
 				int randomBall = random.nextInt(4);
 				widget.balls.add(new Ball(getWidth(), randomHeight, randomBall));
+			}
+			
+			// Create new potion between every 6 balls
+			if (count % 200 == 0) {
+				int randomHeight = random.nextInt(10) * 24;
+				widget.balls.add(new Ball(getWidth(), randomHeight, 4));
+			}
+			
+			// Stop game if no more lives
+			System.out.println(player.getLives());
+			if (player.getLives() <= 0) {
+				this.cancel();
 			}
 			
 			widget.repaint();
@@ -150,10 +166,6 @@ public class GameWidget extends Widget implements Element {
 	
 	private int getCenterY() {
 		return getHeight() / 2;
-	}
-	
-	private void drawImageToCenter(GraphicsContext g, Image image) {
-		g.drawImage(image, getCenterX(), getCenterY(), GraphicsContext.VCENTER | GraphicsContext.HCENTER);
 	}
 	
 	private void drawImage(GraphicsContext g, Image image, int x, int y) {
