@@ -31,6 +31,11 @@ public class GameWidget extends Widget implements Element, EventHandler {
 	
 	// Attributs du jeu
 	int backgroundPosition = 0;
+	int lastPressed = 0;
+	int lastReleased = 0;
+	int diff = 0;
+	boolean direction = false;
+	
 	private Date startDate;
 	private Player player;
 	private List<Ball> balls;
@@ -70,7 +75,7 @@ public class GameWidget extends Widget implements Element, EventHandler {
 		
 		// Player position
 		drawImage(g, playerImage, player.getX(), player.getY(), GraphicsContext.VCENTER | GraphicsContext.LEFT);
-		g.drawRect(player.getX(), player.getY()-35, 70, 70);
+		//g.drawRect(player.getX() + 13, player.getY() - 35, 45, 70); // HITBOX DEBUG
 		
 		// Hearts position
 		for (int i = 0; i < player.getLives(); i++)
@@ -90,16 +95,14 @@ public class GameWidget extends Widget implements Element, EventHandler {
 	
 	private class AnimatorTask extends TimerTask {
 
-		private final int ABSOLUTE_INCREMENT = 6;
 		private final GameWidget widget;
 		private final Player player;
 		
+		private int hMove = 6;
 		private int count = 0;
 		
 		private Random random;
 		
-		private int hMove = ABSOLUTE_INCREMENT;
-			
 		public AnimatorTask(GameWidget widget, Player player) {
 			this.widget = widget;
 			this.player = player;
@@ -118,6 +121,16 @@ public class GameWidget extends Widget implements Element, EventHandler {
 				widget.backgroundPosition = 0;
 			}
 			
+			// Player swipe effect
+			if (widget.diff > 0) {
+				if (direction)
+					player.setY(player.getY() + 2);
+				else
+					player.setY(player.getY() - 2);
+				widget.diff -= 2;
+			}
+			
+			
 			Iterator<Ball> iterator = widget.balls.iterator();
 			
 			while(iterator.hasNext()) {
@@ -128,14 +141,25 @@ public class GameWidget extends Widget implements Element, EventHandler {
 				int y = ball.getY();
 				ball.setX(x - hMove);
 				
-				// Check for collision
-				if ((x <= player.getX() + 70) && (y <= player.getY() + 35) && (x + 24 >= player.getX()) && (y + 24 >= player.getY() - 35)) {
+				/*
+				 * Check for collision
+				 * Player Image size is 70x70px, with transparent areas to the sides.
+				 * 1. 12px-wide transparent area to the right means that we need to catch right collisions within 58px (70-12) range from the anchor point (to its right).
+				 * 2. 13px-wide transparent area to the left means that we need to catch left collisions within 13px range from the anchor point (to its right). 
+				 * 3. The anchor point is vertically centered so we need to catch top and bottom collisions within 35px (70/2) range from the anchor point (both sides).
+				 */
+				if ((x <= player.getX() + 58) && (y <= player.getY() + 35) && (x + 24 >= player.getX() + 13) && (y + 24 >= player.getY() - 35)) {
 					int lives = player.getLives();
 					
-					if (ball.getBallType() == 4) { //&& lives < 3) {
-						player.setLives(++lives);
+					System.out.print("COLLISION ");
+					
+					if (ball.getBallType() == 4) {
+						if (lives < 3)
+							player.setLives(++lives);
+						System.out.println("POTION");
 					} else {
 						player.setLives(--lives);
+						System.out.println("BALL");
 					}
 					
 					iterator.remove();
@@ -163,7 +187,7 @@ public class GameWidget extends Widget implements Element, EventHandler {
 			
 			// Stop game if no more lives
 			if (player.getLives() <= 0) {
-				//this.cancel();
+				this.cancel();
 				System.out.println("GAME OVER");
 			}
 			
@@ -173,29 +197,46 @@ public class GameWidget extends Widget implements Element, EventHandler {
 	
 	@Override
 	public boolean handleEvent(int event) {
-		// TODO Auto-generated method stub
+
 		if (Event.getType(event) == Event.POINTER) {
-			if (Pointer.isDragged(event)) {
-				Pointer pointer = (Pointer) Event.getGenerator(event);
-				int x = pointer.getX();
-				int y = pointer.getY();
-				
-				if ((player.getX() - 35 <= x) && (x <= player.getX() + 105) && (player.getY() - 70 <= y) && (y <= player.getY() + 70)) {
-					player.setY(y); 
-					
+			Pointer pointer = (Pointer) Event.getGenerator(event);
+			int x = pointer.getX();
+			int y = pointer.getY();
+			
+			/*
+			 * Player Image size is 70x70px, but has a displayed area of 45x70px.
+			 * On device, finger is not as precise as pointer, so we make the swipe zone larger (89x140px).
+			 * That means adding 22px on left and right, and 35px on top and bottom.
+			 * 1. Anchor point is already at a 13px offset to the left of the displayed area, so we only need to add 9px.
+			 * 2. Right collisions are caught at a 58px offset from anchor point, so we need an 80px (58+22) offset here.
+			 * 3. Top and bottom collisions are both at 35px offset, so we need a 70px (35+35) offset on each side. 
+			 */
+			if ((player.getX() - 9 <= x) && (x <= player.getX() + 80) && (player.getY() - 70 <= y) && (y <= player.getY() + 70)) {
+				if (Pointer.isPressed(event)) {
+					lastPressed = player.getY();
 					return true;
-				}	
+				}
+				
+				if (Pointer.isDragged(event)) {
+					player.setY(y);
+					return true;
+				}
+				
+				if (Pointer.isReleased(event)) {
+					lastReleased = player.getY();
+					diff = Math.abs((int) ((lastReleased - lastPressed) * 0.30));
+					System.out.println(diff);
+					direction = lastPressed < lastReleased;
+					return true;
+				}
 			}
 		}
+			
 		return false;
 	}
 	
 	public int getCenterX() {
 		return getWidth() / 2;
-	}
-	
-	private int getCenterY() {
-		return getHeight() / 2;
 	}
 	
 	private void drawImage(GraphicsContext g, Image image, int x, int y) {

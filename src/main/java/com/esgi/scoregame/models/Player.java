@@ -3,6 +3,7 @@ package com.esgi.scoregame.models;
 public class Player {
 	private int x;
 	private int y;
+	private int momentum = 0;
 	private int lives = 3;
 	
 	public Player(int x, int y) {
