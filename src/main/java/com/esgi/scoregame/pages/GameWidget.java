@@ -14,15 +14,19 @@ import com.esgi.scoregame.models.Player;
 
 import ej.microui.display.GraphicsContext;
 import ej.microui.display.Image;
+import ej.microui.event.Event;
+import ej.microui.event.generator.Pointer;
+import ej.microui.util.EventHandler;
 import ej.mwt.Widget;
 import ej.style.Element;
 import ej.style.State;
 
-public class GameWidget extends Widget implements Element {
+public class GameWidget extends Widget implements Element, EventHandler {
 	
 	// Assets
 	private Image wallpaperImage;
 	private Image playerImage;
+	private Image heartImage;
 	private Image[] pokeballImages = new Image[5];
 	
 	// Attributs du jeu
@@ -47,6 +51,7 @@ public class GameWidget extends Widget implements Element {
 		try {
 			wallpaperImage = Image.createImage("/images/wallpaper.png");
 			playerImage = Image.createImage("/images/pikachu.png");
+			heartImage = Image.createImage("/images/heart.png");
 			pokeballImages[0] = Image.createImage("/images/pokeball.png");
 			pokeballImages[1] = Image.createImage("/images/superball.png");
 			pokeballImages[2] = Image.createImage("/images/hyperball.png");
@@ -65,6 +70,11 @@ public class GameWidget extends Widget implements Element {
 		
 		// Player position
 		drawImage(g, playerImage, player.getX(), player.getY(), GraphicsContext.VCENTER | GraphicsContext.LEFT);
+		g.drawRect(player.getX(), player.getY()-35, 70, 70);
+		
+		// Hearts position
+		for (int i = 0; i < player.getLives(); i++)
+			drawImage(g, heartImage, i*15 + 5, 5);
 		
 		// Balls position
 		for (Ball ball : balls) {
@@ -75,7 +85,7 @@ public class GameWidget extends Widget implements Element {
 	public void animate(){
 		TimerTask animator = new AnimatorTask(this, player);
 		Timer animationTimer = new Timer();
-		animationTimer.schedule(animator, 1000/30, 1000/30);
+		animationTimer.schedule(animator, 1, 1000/30);
 	}
 	
 	private class AnimatorTask extends TimerTask {
@@ -119,16 +129,17 @@ public class GameWidget extends Widget implements Element {
 				ball.setX(x - hMove);
 				
 				// Check for collision
-				if ((x <= player.getX() + 35) && (y <= player.getY() + 35) && (x + 24 >= player.getX() - 35) && (y + 24 >= player.getY() - 35)) {
+				if ((x <= player.getX() + 70) && (y <= player.getY() + 35) && (x + 24 >= player.getX()) && (y + 24 >= player.getY() - 35)) {
 					int lives = player.getLives();
 					
-					if (ball.getBallType() == 4 && lives < 3) {
+					if (ball.getBallType() == 4) { //&& lives < 3) {
 						player.setLives(++lives);
 					} else {
 						player.setLives(--lives);
 					}
 					
 					iterator.remove();
+					continue;
 				}
 				
 				// Delete objects that are outside the screen
@@ -151,13 +162,32 @@ public class GameWidget extends Widget implements Element {
 			}
 			
 			// Stop game if no more lives
-			System.out.println(player.getLives());
 			if (player.getLives() <= 0) {
-				this.cancel();
+				//this.cancel();
+				System.out.println("GAME OVER");
 			}
 			
 			widget.repaint();
 		}		
+	}
+	
+	@Override
+	public boolean handleEvent(int event) {
+		// TODO Auto-generated method stub
+		if (Event.getType(event) == Event.POINTER) {
+			if (Pointer.isDragged(event)) {
+				Pointer pointer = (Pointer) Event.getGenerator(event);
+				int x = pointer.getX();
+				int y = pointer.getY();
+				
+				if ((player.getX() - 35 <= x) && (x <= player.getX() + 105) && (player.getY() - 70 <= y) && (y <= player.getY() + 70)) {
+					player.setY(y); 
+					
+					return true;
+				}	
+			}
+		}
+		return false;
 	}
 	
 	public int getCenterX() {
