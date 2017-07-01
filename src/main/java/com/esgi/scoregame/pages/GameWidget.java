@@ -33,8 +33,9 @@ public class GameWidget extends Widget implements Element, EventHandler {
 	int backgroundPosition = 0;
 	int lastPressed = 0;
 	int lastReleased = 0;
-	int diff = 0;
+	float diff = 0;
 	boolean direction = false;
+	int swipe = 0;
 	
 	private Date startDate;
 	private Player player;
@@ -122,13 +123,24 @@ public class GameWidget extends Widget implements Element, EventHandler {
 			}
 			
 			// Player swipe effect
-			if (widget.diff > 0) {
+			/*if (widget.diff > 0) {
 				if (direction)
 					player.setY(player.getY() + 2);
 				else
 					player.setY(player.getY() - 2);
 				widget.diff -= 2;
+			} */
+			
+			int playerY = widget.player.getY();
+			if (playerY > 0 && playerY < widget.getHeight() && widget.swipe > 0) {
+				if (widget.direction) {
+					widget.player.setY(playerY + widget.swipe);
+				} else {
+					widget.player.setY(playerY - widget.swipe);
+				}
+				widget.swipe--;
 			}
+			
 			
 			
 			Iterator<Ball> iterator = widget.balls.iterator();
@@ -148,17 +160,17 @@ public class GameWidget extends Widget implements Element, EventHandler {
 				 * 2. 13px-wide transparent area to the left means that we need to catch left collisions within 13px range from the anchor point (to its right). 
 				 * 3. The anchor point is vertically centered so we need to catch top and bottom collisions within 35px (70/2) range from the anchor point (both sides).
 				 */
-				if ((x <= player.getX() + 58) && (y <= player.getY() + 35) && (x + 24 >= player.getX() + 13) && (y + 24 >= player.getY() - 35)) {
-					int lives = player.getLives();
+				if ((x <= widget.player.getX() + 58) && (y <= widget.player.getY() + 35) && (x + 24 >= widget.player.getX() + 13) && (y + 24 >= widget.player.getY() - 35)) {
+					int lives = widget.player.getLives();
 					
 					System.out.print("COLLISION ");
 					
 					if (ball.getBallType() == 4) {
 						if (lives < 3)
-							player.setLives(++lives);
+							widget.player.setLives(++lives);
 						System.out.println("POTION");
 					} else {
-						player.setLives(--lives);
+						widget.player.setLives(--lives);
 						System.out.println("BALL");
 					}
 					
@@ -179,14 +191,14 @@ public class GameWidget extends Widget implements Element, EventHandler {
 				widget.balls.add(new Ball(getWidth(), randomHeight, randomBall));
 			}
 			
-			// Create new potion between every 6 balls
-			if (count % 200 == 0) {
+			// Create new potion between every 20 balls
+			if (count % 615 == 0) {
 				int randomHeight = random.nextInt(10) * 24;
 				widget.balls.add(new Ball(getWidth(), randomHeight, 4));
 			}
 			
 			// Stop game if no more lives
-			if (player.getLives() <= 0) {
+			if (widget.player.getLives() <= 0) {
 				this.cancel();
 				System.out.println("GAME OVER");
 			}
@@ -223,10 +235,12 @@ public class GameWidget extends Widget implements Element, EventHandler {
 				}
 				
 				if (Pointer.isReleased(event)) {
-					lastReleased = player.getY();
-					diff = Math.abs((int) ((lastReleased - lastPressed) * 0.30));
-					System.out.println(diff);
+					lastReleased = pointer.getY();
 					direction = lastPressed < lastReleased;
+					
+					float diff = Math.abs(lastReleased - lastPressed);
+					swipe = (int)(diff/244.0f * 30.0f);
+					System.out.println(swipe);
 					return true;
 				}
 			}
