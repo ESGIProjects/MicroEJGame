@@ -1,50 +1,115 @@
 package com.esgi.scoregame.pages;
 
 
+import java.util.Date;
+
+import ej.microui.display.Colors;
+import ej.microui.display.GraphicsContext;
+import ej.style.Stylesheet;
+import ej.style.background.SimpleRoundedPlainBackground;
+import ej.style.outline.SimpleOutline;
+import ej.style.selector.ClassSelector;
+import ej.style.selector.TypeSelector;
+import ej.style.selector.combinator.DescendantCombinator;
+import ej.style.util.EditableStyle;
+import ej.style.util.StyleHelper;
 import ej.widget.basic.Label;
 import ej.widget.composed.Button;
+import ej.widget.container.List;
 import ej.widget.container.Split;
 import ej.widget.listener.OnClickListener;
 import ej.widget.navigation.page.Page;
 
 public class ScorePage extends Page {
 
-private Split container;
-	
-	public ScorePage(double score){
-		
-		container = new Split(false,0.3f);
-		Label scoreLabel = new Label("Score : " + score);
-		
-		Split buttonList = new Split(true, 0.5f);
-		
-		Button replay = new Button("Replay");
-		Button exit = new Button("Exit");
-		
-		buttonList.setFirst(replay);
-		buttonList.setLast(exit);
-		
-		container.setFirst(scoreLabel);
-		container.setLast(buttonList);
-		
-		setWidget(container);
-		
-		replay.addOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick() {
-				//MainActivity.display(new MenuPage());
-			}
-		});
-		
-		exit.addOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick() {
-				// TODO
-			}
-		});
+	private Split container;
+
+	public ScorePage(double score) {
+		Date date = new Date();
+		layout(date, date);
 	}
 
-	
+	public void layout(Date start, Date end) {
+		container = new Split(false, 0.8f);
+
+		// Score
+		int score = (int) ((end.getTime() - start.getTime())/1000);
+
+		// Labels
+		List labelsList = new List(false);
+		Label gameOverTitle = new Label("GAME OVER");
+		gameOverTitle.addClassSelector("GameOverTitle");
+		Label scoreSubtitle = new Label("Score : " + score);
+		scoreSubtitle.addClassSelector("ScoreSubtitle");
+		labelsList.add(gameOverTitle);
+		labelsList.add(scoreSubtitle);
+
+		// Buttons
+		List buttonsList = new List(true);
+		Button leaderboardButton = new Button("Best scores");
+		Button replayButton = new Button("Replay");
+		Button exitButton = new Button("Exit");
+		buttonsList.add(leaderboardButton);
+		buttonsList.add(replayButton);
+		buttonsList.add(exitButton);
+
+		// Container
+		container.setFirst(labelsList);
+		container.setLast(buttonsList);
+		setWidget(container);
+
+		// Listeners
+		leaderboardButton.addOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick() {
+				System.out.println("BEST SCORES BUTTON");			}
+		});
+
+		replayButton.addOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick() {
+				System.out.println("REPLAY BUTTON");
+			}
+		});
+
+		exitButton.addOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick() {
+				System.out.println("EXIT BUTTON");
+			}
+		});
+
+		// Style
+		applyStylesheet();
+	}
+
+	private void applyStylesheet() {
+		Stylesheet stylesheet = StyleHelper.getStylesheet();
+		
+		// 1. Game over title
+		EditableStyle gameOverStyle = new EditableStyle();
+		gameOverStyle.setAlignment(GraphicsContext.BOTTOM | GraphicsContext.HCENTER);
+		gameOverStyle.setForegroundColor(Colors.GREEN);
+		stylesheet.addRule(new ClassSelector("GameOverTitle"), gameOverStyle);
+		
+		// 2. Score subtitle
+		EditableStyle scoreStyle = new EditableStyle();
+		scoreStyle.setAlignment(GraphicsContext.TOP | GraphicsContext.HCENTER);
+		scoreStyle.setForegroundColor(Colors.GREEN);
+		stylesheet.addRule(new ClassSelector("ScoreSubtitle"), scoreStyle);
+		
+		// 3. Buttons
+		EditableStyle buttonStyle = new EditableStyle();
+		buttonStyle.setMargin(new SimpleOutline(5));
+		buttonStyle.setBackground(new SimpleRoundedPlainBackground(25));
+		buttonStyle.setBackgroundColor(Colors.CYAN);
+		buttonStyle.setAlignment(GraphicsContext.VCENTER | GraphicsContext.HCENTER);
+		buttonStyle.setForegroundColor(Colors.GREEN);
+		stylesheet.addRule(new DescendantCombinator(new TypeSelector(Button.class), new TypeSelector(Label.class)), buttonStyle);
+
+	}
+
 }

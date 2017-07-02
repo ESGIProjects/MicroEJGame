@@ -122,15 +122,6 @@ public class GameWidget extends Widget implements Element, EventHandler {
 				widget.backgroundPosition = 0;
 			}
 			
-			// Player swipe effect
-			/*if (widget.diff > 0) {
-				if (direction)
-					player.setY(player.getY() + 2);
-				else
-					player.setY(player.getY() - 2);
-				widget.diff -= 2;
-			} */
-			
 			int playerY = widget.player.getY();
 			if (playerY > 0 && playerY < widget.getHeight() && widget.swipe > 0) {
 				if (widget.direction) {

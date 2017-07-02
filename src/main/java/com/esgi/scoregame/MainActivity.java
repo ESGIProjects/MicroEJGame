@@ -7,16 +7,24 @@ import com.esgi.scoregame.pages.MenuPage;
 import com.esgi.scoregame.pages.ScorePage;
 
 import ej.microui.MicroUI;
+import ej.microui.display.Colors;
+import ej.microui.display.GraphicsContext;
 import ej.mwt.Desktop;
 import ej.mwt.Panel;
+import ej.style.Stylesheet;
+import ej.style.selector.TypeSelector;
+import ej.style.util.EditableStyle;
+import ej.style.util.StyleHelper;
 import ej.wadapps.app.Activity;
+import ej.widget.composed.Button;
 import ej.widget.navigation.navigator.HistorizedNavigator;
+import ej.widget.navigation.navigator.SimpleNavigator;
 import ej.widget.navigation.transition.HorizontalTransitionManager;
 
 public class MainActivity implements Activity {
 	
 	private static HistorizedNavigator navigator;
-	private static ArrayList<Double> scores;
+	//private static ArrayList<Double> scores;
 
 	@Override
 	public String getID() {
@@ -44,14 +52,14 @@ public class MainActivity implements Activity {
 		navigator = new HistorizedNavigator();
 		navigator.setTransitionManager(new HorizontalTransitionManager());
 		
-		scores = new ArrayList<Double>();
+		//scores = new ArrayList<Double>();
 		
-		//navigator.show(new MenuPage());
-		navigator.show(new GamePage()); // Development purpose
+		navigator.show(new ScorePage(0));
+		//navigator.show(new GamePage()); // Development purpose
 		
 		Desktop desktop = new Desktop();
 		Panel mainPanel = new Panel();
-		
+				
 		mainPanel.setWidget(navigator);
 		mainPanel.show(desktop, true);
 		
