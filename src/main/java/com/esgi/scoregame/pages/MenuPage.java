@@ -28,13 +28,16 @@ public class MenuPage extends Page {
 	
 		// Title
 		Label title = new Label("ScoreGame");
-		title.addClassSelector("TITLE");
+		title.addClassSelector("Menu.Title");
 		
 		// Buttons
 		List buttonList = new List(false);
 		Button play = new Button("Play");
+		play.addClassSelector("Menu.Button");
 		Button scores = new Button("Scores");
+		scores.addClassSelector("Menu.Button");
 		Button exit = new Button("Exit");
+		exit.addClassSelector("Menu.Button");
 		buttonList.add(play);
 		buttonList.add(scores);
 		buttonList.add(exit);
@@ -50,6 +53,7 @@ public class MenuPage extends Page {
 			@Override
 			public void onClick() {
 				System.out.println("PLAY BUTTON");
+				MainActivity.goTo(new GamePage());
 			}
 		});
 		
@@ -58,6 +62,7 @@ public class MenuPage extends Page {
 			@Override
 			public void onClick() {
 				System.out.println("SCORES BUTTON");
+				MainActivity.goTo(new LeaderboardPage());
 			}
 		});
 		
@@ -73,14 +78,14 @@ public class MenuPage extends Page {
 		applyStylesheet();
 	}
 	
-	private void applyStylesheet() {
+	public void applyStylesheet() {
 		Stylesheet stylesheet = StyleHelper.getStylesheet();
 		
 		// 1. Title
 		EditableStyle titleStyle = new EditableStyle();
 		titleStyle.setAlignment(GraphicsContext.VCENTER | GraphicsContext.HCENTER);
 		titleStyle.setForegroundColor(Colors.GREEN);
-		stylesheet.addRule(new ClassSelector("TITLE"), titleStyle);
+		stylesheet.addRule(new ClassSelector("Menu.Title"), titleStyle);
 		
 		
 		// 2. Buttons & Labels
@@ -95,7 +100,8 @@ public class MenuPage extends Page {
 		buttonStyle.setAlignment(GraphicsContext.VCENTER | GraphicsContext.HCENTER);
 		buttonStyle.setForegroundColor(0x68bcf7); // cyan
 		
-		stylesheet.addRule(new DescendantCombinator(new TypeSelector(Button.class), new TypeSelector(Label.class)), buttonStyle);
+		stylesheet.addRule(new ClassSelector("Menu.Button"), buttonStyle);
+		stylesheet.addRule(new DescendantCombinator(new ClassSelector("Menu.Button"), new TypeSelector(Label.class)), buttonStyle);
 	}
 
 }

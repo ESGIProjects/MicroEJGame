@@ -39,7 +39,7 @@ public class LeaderboardPage extends Page {
 
 		// Title
 		Label titleLabel = new Label("BEST SCORES");
-		titleLabel.addClassSelector("TITLE");
+		titleLabel.addClassSelector("BestScores.Title");
 		
 		// Scores
 		Scroll listScroll = new Scroll(false, true);
@@ -47,12 +47,13 @@ public class LeaderboardPage extends Page {
 		
 		for (Integer score : scores) {
 			Label scoreLabel = new Label(score.toString());
-			scoreLabel.addClassSelector("Score");
+			scoreLabel.addClassSelector("BestScores.Label");
 			scoresList.add(scoreLabel);
 		}
 		
 		// Back button
 		Button backButton = new Button("Back");
+		backButton.addClassSelector("BestScores.Button");
 		scoresList.add(backButton);
 		
 		listScroll.setWidget(scoresList);
@@ -67,7 +68,8 @@ public class LeaderboardPage extends Page {
 
 			@Override
 			public void onClick() {
-				System.out.println("BEST SCORES BUTTON");			
+				System.out.println("BEST SCORES BUTTON");		
+				MainActivity.goBack();
 			}
 		});
 
@@ -75,20 +77,20 @@ public class LeaderboardPage extends Page {
 		applyStylesheet();
 	}
 
-	private void applyStylesheet() {
+	public void applyStylesheet() {
 		Stylesheet stylesheet = StyleHelper.getStylesheet();
 		
 		// 1. Best scores title
 		EditableStyle titleStyle = new EditableStyle();
 		titleStyle.setAlignment(GraphicsContext.VCENTER | GraphicsContext.HCENTER);
 		titleStyle.setForegroundColor(Colors.GREEN);
-		stylesheet.addRule(new ClassSelector("TITLE"), titleStyle);
+		stylesheet.addRule(new ClassSelector("BestScores.Title"), titleStyle);
 		
 		// 2. Score label
 		EditableStyle scoreStyle = new EditableStyle();
 		scoreStyle.setMargin(new SimpleOutline(5));
 		scoreStyle.setAlignment(GraphicsContext.VCENTER | GraphicsContext.HCENTER);
-		stylesheet.addRule(new ClassSelector("Score"), scoreStyle);
+		stylesheet.addRule(new ClassSelector("BestScores.Label"), scoreStyle);
 		
 		// 3. Back button
 		EditableStyle buttonStyle = new EditableStyle();
@@ -98,7 +100,8 @@ public class LeaderboardPage extends Page {
 		buttonStyle.setBackgroundColor(Colors.CYAN);
 		buttonStyle.setAlignment(GraphicsContext.VCENTER | GraphicsContext.HCENTER);
 		buttonStyle.setForegroundColor(Colors.GREEN);
-		stylesheet.addRule(new DescendantCombinator(new TypeSelector(Button.class), new TypeSelector(Label.class)), buttonStyle);
+		stylesheet.addRule(new ClassSelector("BestScores.Button"), scoreStyle);
+		stylesheet.addRule(new DescendantCombinator(new ClassSelector("BestScores.Button"), new TypeSelector(Label.class)), buttonStyle);
 
 	}
 

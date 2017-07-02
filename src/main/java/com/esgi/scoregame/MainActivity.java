@@ -20,12 +20,13 @@ import ej.wadapps.app.Activity;
 import ej.widget.composed.Button;
 import ej.widget.navigation.navigator.HistorizedNavigator;
 import ej.widget.navigation.navigator.SimpleNavigator;
+import ej.widget.navigation.page.Page;
 import ej.widget.navigation.transition.HorizontalTransitionManager;
 
 public class MainActivity implements Activity {
 	
 	private static HistorizedNavigator navigator;
-	private static ArrayList<Integer> scores;
+	private static ArrayList<Integer> scores = new ArrayList<Integer>();
 
 	@Override
 	public String getID() {
@@ -53,10 +54,7 @@ public class MainActivity implements Activity {
 		navigator = new HistorizedNavigator();
 		navigator.setTransitionManager(new HorizontalTransitionManager());
 		
-		//scores = new ArrayList<Double>();
-		
-		navigator.show(new LeaderboardPage());
-		//navigator.show(new GamePage()); // Development purpose
+		navigator.show(new MenuPage());
 		
 		Desktop desktop = new Desktop();
 		Panel mainPanel = new Panel();
@@ -91,10 +89,6 @@ public class MainActivity implements Activity {
 
 	}
 	
-	/*public static void display(Page p){
-		nd.show(p);
-	}*/
-	
 	public static ArrayList<Integer> getScores() {
 		return scores;
 	}
@@ -102,5 +96,15 @@ public class MainActivity implements Activity {
 	public static void addScore(int score) {
 		Integer i = new Integer(score);
 		scores.add(i);
+	}
+	
+	public static void goBack() {
+		if (navigator.canGoBackward()) {
+			navigator.back();
+		}
+	}
+	
+	public static void goTo(Page page) {
+		navigator.show(page);
 	}
 }
