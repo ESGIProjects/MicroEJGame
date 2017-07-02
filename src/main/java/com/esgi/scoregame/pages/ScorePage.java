@@ -29,7 +29,7 @@ public class ScorePage extends Page {
 		layout(date, date);
 	}
 
-	public void layout(Date start, Date end) {
+	private void layout(Date start, Date end) {
 		container = new Split(false, 0.8f);
 
 		// Score

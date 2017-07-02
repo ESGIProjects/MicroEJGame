@@ -3,6 +3,7 @@ package com.esgi.scoregame;
 import java.util.ArrayList;
 
 import com.esgi.scoregame.pages.GamePage;
+import com.esgi.scoregame.pages.LeaderboardPage;
 import com.esgi.scoregame.pages.MenuPage;
 import com.esgi.scoregame.pages.ScorePage;
 
@@ -24,7 +25,7 @@ import ej.widget.navigation.transition.HorizontalTransitionManager;
 public class MainActivity implements Activity {
 	
 	private static HistorizedNavigator navigator;
-	//private static ArrayList<Double> scores;
+	private static ArrayList<Integer> scores;
 
 	@Override
 	public String getID() {
@@ -54,7 +55,7 @@ public class MainActivity implements Activity {
 		
 		//scores = new ArrayList<Double>();
 		
-		navigator.show(new ScorePage(0));
+		navigator.show(new LeaderboardPage());
 		//navigator.show(new GamePage()); // Development purpose
 		
 		Desktop desktop = new Desktop();
@@ -93,4 +94,13 @@ public class MainActivity implements Activity {
 	/*public static void display(Page p){
 		nd.show(p);
 	}*/
+	
+	public static ArrayList<Integer> getScores() {
+		return scores;
+	}
+	
+	public static void addScore(int score) {
+		Integer i = new Integer(score);
+		scores.add(i);
+	}
 }
