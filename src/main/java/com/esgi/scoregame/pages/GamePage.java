@@ -33,6 +33,7 @@ public class GamePage extends Page {
 			@Override
 			public void onClick() {
 				System.out.println("Back to Main Menu");
+				widget.animator.cancel();
 				MainActivity.goBack();
 			}
 		});

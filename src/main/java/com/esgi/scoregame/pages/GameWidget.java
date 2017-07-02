@@ -9,6 +9,7 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.esgi.scoregame.MainActivity;
 import com.esgi.scoregame.models.Ball;
 import com.esgi.scoregame.models.Player;
 
@@ -22,6 +23,8 @@ import ej.style.Element;
 import ej.style.State;
 
 public class GameWidget extends Widget implements Element, EventHandler {
+	
+	public TimerTask animator;
 	
 	// Assets
 	private Image wallpaperImage;
@@ -88,8 +91,8 @@ public class GameWidget extends Widget implements Element, EventHandler {
 		}
 	}
 	
-	public void animate(){
-		TimerTask animator = new AnimatorTask(this, player);
+	public void animate() {
+		animator = new AnimatorTask(this);
 		Timer animationTimer = new Timer();
 		animationTimer.schedule(animator, 1, 1000/30);
 	}
@@ -97,16 +100,14 @@ public class GameWidget extends Widget implements Element, EventHandler {
 	private class AnimatorTask extends TimerTask {
 
 		private final GameWidget widget;
-		private final Player player;
 		
 		private int hMove = 6;
 		private int count = 0;
 		
 		private Random random;
 		
-		public AnimatorTask(GameWidget widget, Player player) {
+		public AnimatorTask(GameWidget widget) {
 			this.widget = widget;
-			this.player = player;
 			random = new Random();
 		}
 		
@@ -192,6 +193,8 @@ public class GameWidget extends Widget implements Element, EventHandler {
 			if (widget.player.getLives() <= 0) {
 				this.cancel();
 				System.out.println("GAME OVER");
+				Date endDate = new Date();
+				MainActivity.goTo(new ScorePage(startDate, endDate));
 			}
 			
 			widget.repaint();

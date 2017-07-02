@@ -2,6 +2,8 @@ package com.esgi.scoregame.pages;
 
 import com.esgi.scoregame.MainActivity;
 
+import ej.components.dependencyinjection.ServiceLoaderFactory;
+import ej.exit.ExitHandler;
 import ej.microui.display.Colors;
 import ej.microui.display.GraphicsContext;
 import ej.style.Stylesheet;
@@ -71,6 +73,11 @@ public class MenuPage extends Page {
 			@Override
 			public void onClick() {
 				System.out.println("EXIT BUTTON");
+				ExitHandler exitHandler = ServiceLoaderFactory.getServiceLoader().getService(ExitHandler.class);
+				
+				if (exitHandler != null) {
+					exitHandler.exit();
+				}
 			}
 		});
 		

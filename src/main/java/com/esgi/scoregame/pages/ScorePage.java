@@ -5,6 +5,8 @@ import java.util.Date;
 
 import com.esgi.scoregame.MainActivity;
 
+import ej.components.dependencyinjection.ServiceLoaderFactory;
+import ej.exit.ExitHandler;
 import ej.microui.display.Colors;
 import ej.microui.display.GraphicsContext;
 import ej.style.Stylesheet;
@@ -26,16 +28,16 @@ public class ScorePage extends Page {
 
 	private Split container;
 
-	public ScorePage(double score) {
-		Date date = new Date();
-		layout(date, date);
+	public ScorePage(Date startDate, Date endDate) {
+		layout(startDate, endDate);
 	}
 
-	private void layout(Date start, Date end) {
+	private void layout(Date startDate, Date endDate) {
 		container = new Split(false, 0.8f);
 
 		// Score
-		int score = (int) ((end.getTime() - start.getTime())/1000);
+		int score = (int) ((endDate.getTime() - startDate.getTime())/1000);
+		MainActivity.addScore(score);
 
 		// Labels
 		List labelsList = new List(false);
@@ -50,12 +52,9 @@ public class ScorePage extends Page {
 		List buttonsList = new List(true);
 		Button leaderboardButton = new Button("Best scores");
 		leaderboardButton.addClassSelector("Score.Button");
-		Button replayButton = new Button("Replay");
-		replayButton.addClassSelector("Score.Button");
 		Button exitButton = new Button("Exit");
 		exitButton.addClassSelector("Score.Button");
 		buttonsList.add(leaderboardButton);
-		buttonsList.add(replayButton);
 		buttonsList.add(exitButton);
 
 		// Container
@@ -69,14 +68,7 @@ public class ScorePage extends Page {
 			@Override
 			public void onClick() {
 				System.out.println("BEST SCORES BUTTON");
-			}
-		});
-
-		replayButton.addOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick() {
-				System.out.println("REPLAY BUTTON");
+				MainActivity.goTo(new LeaderboardPage());
 			}
 		});
 
@@ -85,6 +77,11 @@ public class ScorePage extends Page {
 			@Override
 			public void onClick() {
 				System.out.println("EXIT BUTTON");
+				ExitHandler exitHandler = ServiceLoaderFactory.getServiceLoader().getService(ExitHandler.class);
+				
+				if (exitHandler != null) {
+					exitHandler.exit();
+				}
 			}
 		});
 
