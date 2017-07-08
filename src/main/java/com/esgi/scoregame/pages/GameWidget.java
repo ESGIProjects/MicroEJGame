@@ -195,6 +195,7 @@ public class GameWidget extends Widget implements Element, EventHandler {
 				System.out.println("GAME OVER");
 				Date endDate = new Date();
 				MainActivity.goTo(new ScorePage(startDate, endDate));
+				MainActivity.getNavigator().clearHistory();
 			}
 			
 			widget.repaint();

@@ -19,7 +19,7 @@ public class GamePage extends Page {
 	
 	private Split split;
 	private GameWidget widget;
-	private Button mButtonBack;
+	private static Button mButtonBack;
 
 	
 	public GamePage() {
@@ -55,5 +55,9 @@ public class GamePage extends Page {
 		buttonStyle.setBackgroundColor(0x68bcf7);		
 		stylesheet.addRule(new ClassSelector("Game.Button"), buttonStyle);
 		stylesheet.addRule(new DescendantCombinator(new ClassSelector("Game.Button"), new TypeSelector(Label.class)), buttonStyle);
+	}
+	
+	public static int getHeightButton(){
+		return mButtonBack.getHeight();
 	}
 }

@@ -107,4 +107,8 @@ public class MainActivity implements Activity {
 	public static void goTo(Page page) {
 		navigator.show(page);
 	}
+	
+	public static HistorizedNavigator getNavigator(){
+		return navigator;
+	}
 }

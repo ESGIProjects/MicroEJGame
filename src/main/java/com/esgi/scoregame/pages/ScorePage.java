@@ -77,11 +77,8 @@ public class ScorePage extends Page {
 			@Override
 			public void onClick() {
 				System.out.println("EXIT BUTTON");
-				ExitHandler exitHandler = ServiceLoaderFactory.getServiceLoader().getService(ExitHandler.class);
-				
-				if (exitHandler != null) {
-					exitHandler.exit();
-				}
+				MainActivity.goTo(new MenuPage());
+				MainActivity.getNavigator().clearHistory();
 			}
 		});
 
